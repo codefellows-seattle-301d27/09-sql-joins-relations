@@ -65,7 +65,9 @@ app.post('/articles', function(request, response) {
     client.query(
       `INSERT INTO articles (author_id, title, category, "publishedOn", body)
       VALUES ($1, $2, $3, $4, $5);`, //DONE TODO: Write a SQL query to insert the new article using the author_id from our previous query
-      [], // TODO: Add the data from our new article, including the author_id, as data for the SQL query.
+      [
+        request.body.author_id
+      ], //DONE TODO: Add the data from our new article, including the author_id, as data for the SQL query.
       function(err) {
         if (err) console.error(err);
         response.send('insert complete');
