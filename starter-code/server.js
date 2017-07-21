@@ -52,9 +52,12 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      `select author_id from authors where author='$1' AND "authorUrl"='$2';`,
+      `select author_id from authors where author=$1 AND "authorUrl"=$2;`,
       // DONE: Write a SQL query to retrieve the author_id from the authors table for the new article
-      [request.body.author, request.body.authorUrl],
+      [
+        request.body.author,
+        request.body.authorUrl
+      ],
       // DONE: Add the author name as data for the SQL query
       function(err, result) {
         if (err) console.error(err)
@@ -67,7 +70,6 @@ app.post('/articles', function(request, response) {
     client.query(
       `INSERT INTO articles (author_id, title, body, category, "publishedOn") VALUES ($1, $2, $3, $4, $5)`,
       // DONE: Write a SQL query to insert the new article using the author_id from our previous query
-
       [
         author_id,
         request.body.title,
