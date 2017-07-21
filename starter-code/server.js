@@ -51,7 +51,7 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      `SELECT author_id FROM authors WHERE author=$1 AND authorUrl=$2`, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
+      `SELECT author_id FROM authors WHERE author=$1 AND authorUrl=$2;`, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
       [
         req.body.author,
         req.body.authorUrl
@@ -66,7 +66,7 @@ app.post('/articles', function(request, response) {
   function queryThree(author_id) {
     client.query(
       `INSERT INTO articles (article_id, author_id, title, category, "publishedOn", body) VALUES (
-        $1, $2, $3, $4, $5, $6)`, // TODO: Write a SQL query to insert the new article using the author_id from our previous query
+        $1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING RETURNING *;`, // TODO: Write a SQL query to insert the new article using the author_id from our previous query
       [
         request.body.article_id,
         author_id,
