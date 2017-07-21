@@ -6,7 +6,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = `postgre://postgre:${process.env.PG_PASSWORD}@localhost:5432/`;// TODO: Don't forget to set your own conString
+const conString = `postgre://postgre:${process.env.PG_PASSWORD}@localhost:5432/kilovolt`;// DONE: Don't forget to set your own conString
+// Estimated time: 5 minutes | Actual time: 30 minutes
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', function(error) {
@@ -58,7 +59,7 @@ app.post('/articles', function(request, response) {
       `SELECT author_id FROM authors WHERE author=$1;`, // DONE: Write a SQL query to retrieve the author_id from the authors table for the new article
       // Estimated 5 min | Actual 7 min
       [
-        response.body.author,
+        response.body.author
       ], // DONE: Add the author name as data for the SQL query
       // Estimated 5 min | Actual 2 min
       function(err, result) {
@@ -70,8 +71,14 @@ app.post('/articles', function(request, response) {
 
   function queryThree(author_id) {
     client.query(
-      ``, // TODO: Write a SQL query to insert the new article using the author_id from our previous query
-      [], // TODO: Add the data from our new article, including the author_id, as data for the SQL query.
+      `INSERT INTO articles
+        (article, author_id) VALUES ($1, $2);`, // DONE: Write a SQL query to insert the new article using the author_id from our previous query
+        // Estimated time: 20 minutes | Actual time: 4 minutes
+      [
+        response.body.article,
+        author_id
+      ], // DONE: Add the data from our new article, including the author_id, as data for the SQL query.
+      // Estimated time: 5 minutes | Actual time: 2 minutes
       function(err) {
         if (err) console.error(err);
         response.send('insert complete');
@@ -81,12 +88,19 @@ app.post('/articles', function(request, response) {
 });
 
 app.put('/articles/:id', function(request, response) {
-  // TODO: Write a SQL query to update an author record. Remember that our articles now have
+  // DONE: Write a SQL query to update an author record. Remember that our articles now have
   // an author_id property, so we can reference it from the request.body.
-  // TODO: Add the required values from the request as data for the SQL query to interpolate
+  // DONE: Add the required values from the request as data for the SQL query to interpolate
+  // Estimated time for both: 20 minutes | Actual time: 5 minutes
   client.query(
-    ``,
-    []
+    `UPDATE authors
+      SET author=$1, "authorUrl"=$2
+      WHERE author_id=$3` ,
+    [
+      request.body.author,
+      request.body.authorUrl,
+      request.params.id
+    ]
   )
   .then(function() {
     // TODO: Write a SQL query to update an article record. Keep in mind that article records
