@@ -38,7 +38,8 @@ app.get('/articles', function(request, response) {
 
 app.post('/articles', function(request, response) {
   client.query(
-    '', // TODO: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
+    `INSERT INTO articles (author_id, title, body)
+    VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;`, // Done! TODO: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
     [], // TODO: Add the author and "authorUrl" as data for the SQL query
     function(err) {
       if (err) console.error(err)
