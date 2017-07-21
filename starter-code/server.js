@@ -6,7 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = `postgres://postgres:${process.env.PG_PASSWORD}@localhost:5432/string`;
+const conString = `postgres://postgres:${process.env.PG_PASSWORD}@localhost:5432/kilovolt`;
 // DONE: Don't forget to set your own conString
 // estimate 5 min, actual 5 min
 const client = new pg.Client(conString);
@@ -42,7 +42,7 @@ app.post('/articles', function(request, response) {
   client.query(
     // DONE: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
     // estimate 5 min actual 2 min
-    `INSERT INTO authors (author, authorUrl)
+    `INSERT INTO authors (author, "authorUrl")
     VALUES ($1 and $2) ON CONFLICT DO NOTHING;`,
     // DONE: Add the author and "authorUrl" as data for the SQL query
     // estimate 10 min, actual 5 min
@@ -60,7 +60,7 @@ app.post('/articles', function(request, response) {
     client.query(
       // DONE: Write a SQL query to retrieve the author_id from the authors table for the new article
       // estimate 5 min, actual2 min
-      `SELECT author_id FROM authors WHERE author_id = $1;`,
+      `SELECT (author_id FROM authors WHERE author_id = $1, ;`,
       // DONE: Add the author name as data for the SQL query
       [
         request.body.author
@@ -74,14 +74,23 @@ app.post('/articles', function(request, response) {
 
   function queryThree(author_id) {
     client.query(
-      ``, // TODO: Write a SQL query to insert the new article using the author_id from our previous query
-      [], // TODO: Add the data from our new article, including the author_id, as data for the SQL query.
+      `INSERT INTO articles (title, author, "authorUrl", category, "publishedOn", body)
+       WHERE title=$1, author=$2, "authorUrl"=$3, category=$4, "publishedOn"=$5, body=$6
+       author_id=$7;`, // TODO: MAYBE DONE Write a SQL query to insert the new article using the author_id from our previous query
+      [ author_id.body.title,
+        author_id.body.author,
+        author_id.body.authorUrl,
+        author_id.body.category,
+        author_id.body.publishedOn,
+        author_id.body.body,
+        author_id.body.id], // TODO: Add the data from our new article, including the author_id, as data for the SQL query.
       function(err) {
         if (err) console.error(err);
         response.send('insert complete');
       }
     );
   }
+
 });
 
 app.put('/articles/:id', function(request, response) {
