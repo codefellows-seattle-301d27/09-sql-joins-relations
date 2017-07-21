@@ -40,7 +40,7 @@ app.post('/articles', function(request, response) {
   client.query(
     `INSERT IN author (author, authorUrl), VALUES ($1, $2) ON CONFLICT DO NOTHING;`,
     [
-      req.body.author_id,
+      req.body.author,
       req.body.authorUrl
     ], // TODO: Add the author and "authorUrl" as data for the SQL query
     function(err) {
@@ -51,8 +51,11 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      ``, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
-      [], // TODO: Add the author name as data for the SQL query
+      `SELECT author_id FROM authors WHERE author=$1 AND authorUrl=$2`, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
+      [
+        req.body.author,
+        req.body.authorUrl
+      ], // TODO: Add the author name as data for the SQL query
       function(err, result) {
         if (err) console.error(err)
         queryThree(result.rows[0].author_id) // This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query
