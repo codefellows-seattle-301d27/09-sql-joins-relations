@@ -6,8 +6,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = `postgres://postgres:@localhost:5432/kilovolt`;
-//const conString = `postgres://postgres:${process.env.PG_PASSWORD}@localhost:5432/vetmanager`;
+// const conString = `postgres://postgres:@localhost:5432/kilovolt`;
+const conString = `postgres://postgres:${process.env.PG_PASSWORD}@localhost:5432/kilovolt`;
 //Done. TODO: Don't forget to set your own conString
 const client = new pg.Client(conString);
 client.connect();
@@ -52,8 +52,8 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      `SELECT author_id FROM authors;`, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
-      [request.body.author], // TODO: Add the author name as data for the SQL query
+      `SELECT author_id FROM authors;`, //DONE TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
+      [request.body.author], //DONE TODO: Add the author name as data for the SQL query
       function(err, result) {
         if (err) console.error(err)
         queryThree(result.rows[0].author_id) // This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query
@@ -63,7 +63,8 @@ app.post('/articles', function(request, response) {
 
   function queryThree(author_id) {
     client.query(
-      ``, // TODO: Write a SQL query to insert the new article using the author_id from our previous query
+      `INSERT INTO articles (author_id, title, category, "publishedOn", body)
+      VALUES ($1, $2, $3, $4, $5);`, //DONE TODO: Write a SQL query to insert the new article using the author_id from our previous query
       [], // TODO: Add the data from our new article, including the author_id, as data for the SQL query.
       function(err) {
         if (err) console.error(err);
