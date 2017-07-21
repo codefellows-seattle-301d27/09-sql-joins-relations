@@ -4,7 +4,7 @@ const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const app = express();
 const conString = 'postgres://localhost:5432/kilovolt';// TODO: Don't forget to set your own conString. IT took 4 minutes
 const client = new pg.Client(conString);
@@ -24,7 +24,9 @@ app.get('/new', function(request, response) {
 app.get('/articles', function(request, response) {
   // REVIEW: This query will join the data together from our tables and send it back to the client.
   // TODO: Write a SQL query which joins all data from articles and authors tables on the author_id value of each
-  client.query(``)
+  // Estimated 15 minutes
+  // It took: 10 mins
+  client.query(`select * from articles left join authors on authors.author_id=articles.author_id;`)
   .then(function(result) {
     response.send(result.rows);
   })
