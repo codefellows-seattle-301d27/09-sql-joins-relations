@@ -26,7 +26,7 @@ app.get('/articles', function(request, response) {
   // DONE: Write a SQL query which joins all data from articles and authors tables on the author_id value of each
   // Estimated 15 minutes
   // It took: 10 mins
-  client.query(`select * from articles left join authors on authors.author_id=articles.author_id;`)
+  client.query(`SELECT * FROM articles LEFT JOIN authors ON authors.author_id=articles.author_id;`)
   .then(function(result) {
     response.send(result.rows);
   })
@@ -37,7 +37,7 @@ app.get('/articles', function(request, response) {
 
 app.post('/articles', function(request, response) {
   client.query(
-    `insert into authors (author, "authorUrl") values ($1, $2) on conflict do nothing;`, // DONE: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
+    `INSERT INTO authors (author, "authorUrl") VALUES ($1, $2) ON conflict do nothing;`, // DONE: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
     // we found the answer here on why it needs quotes:
     // https://stackoverflow.com/a/563126/3705470
     // it took 6 minutes
@@ -52,7 +52,7 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      `select author_id from authors where author=$1 AND "authorUrl"=$2;`,
+      `SELECT author_id FROM authors WHERE author=$1 AND "authorUrl"=$2;`,
       // DONE: Write a SQL query to retrieve the author_id from the authors table for the new article
       [
         request.body.author,
