@@ -52,8 +52,8 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      ``, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
-      [], // TODO: Add the author name as data for the SQL query
+      `SELECT author_id FROM authors;`, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
+      [request.body.author], // TODO: Add the author name as data for the SQL query
       function(err, result) {
         if (err) console.error(err)
         queryThree(result.rows[0].author_id) // This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query
