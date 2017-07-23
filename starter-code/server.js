@@ -105,7 +105,6 @@ app.put('/articles/:id', function(request, response) {
         request.body.publishedOn,
         request.body.body,
         request.body.article_id
-
       ]
     )
   })
