@@ -38,13 +38,13 @@ app.get('/articles', function(request, response) {
 app.post('/articles', function(request, response) {
   // TODONE: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
   client.query(
-    `INSERT IN author (author, authorUrl), VALUES ($1, $2) ON CONFLICT DO NOTHING;`,
+    `INSERT IN authors (author, "authorUrl"), VALUES ($1, $2) ON CONFLICT DO NOTHING;`,
     [
       request.body.author,
       request.body.authorUrl
     ], // TODO: Add the author and "authorUrl" as data for the SQL query
     function(err) {
-      if (err) console.error(err)
+      // if (err) console.error(err)
       queryTwo() // This is our second query, to be executed when this first query is complete.
     }
   )
@@ -53,8 +53,8 @@ app.post('/articles', function(request, response) {
     client.query(
       `SELECT author_id FROM authors WHERE author=$1 AND authorUrl=$2;`, // TODONE: Write a SQL query to retrieve the author_id from the authors table for the new article
       [
-        req.body.author,
-        req.body.authorUrl
+        request.body.author,
+        request.body.authorUrl
       ], // TODO: Add the author name as data for the SQL query
       function(err, result) {
         if (err) console.error(err)
@@ -83,15 +83,6 @@ app.post('/articles', function(request, response) {
   }
 });
 
-// data: {
-//   author: this.author,
-//   authorUrl: this.authorUrl,
-//   body: this.body,
-//   category: this.category,
-//   publishedOn: this.publishedOn,
-//   title: this.title,
-//   author_id: this.author_id
-// }
 
 app.put('/articles/:id', function(request, response) {
   // TODONE: Write a SQL query to update an author record. Remember that our articles now have
@@ -117,6 +108,7 @@ app.put('/articles/:id', function(request, response) {
     console.error(err);
   })
 });
+
 
 app.delete('/articles/:id', function(request, response) {
   client.query(
