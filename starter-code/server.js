@@ -6,7 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = 'postgres://localhost:5432/kilovolt';// TODO: Don't forget to set your own conString
+const conString = 'postgres://localhost:5432/kilovolt';// TODONE: Don't forget to set your own conString
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', function(error) {
@@ -23,7 +23,7 @@ app.get('/new', function(request, response) {
 
 app.get('/articles', function(request, response) {
   // REVIEW: This query will join the data together from our tables and send it back to the client.
-  // TODO: Write a SQL query which joins all data from articles and authors tables on the author_id value of each
+  // TODONE: Write a SQL query which joins all data from articles and authors tables on the author_id value of each
   client.query(`SELECT * FROM articles
                 INNER JOIN authors ON
                 articles.author_id = authors.author_id`)
@@ -36,7 +36,7 @@ app.get('/articles', function(request, response) {
 });
 
 app.post('/articles', function(request, response) {
-  // TODO: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
+  // TODONE: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
   client.query(
     `INSERT IN author (author, authorUrl), VALUES ($1, $2) ON CONFLICT DO NOTHING;`,
     [
@@ -51,7 +51,7 @@ app.post('/articles', function(request, response) {
 
   function queryTwo() {
     client.query(
-      `SELECT author_id FROM authors WHERE author=$1 AND authorUrl=$2;`, // TODO: Write a SQL query to retrieve the author_id from the authors table for the new article
+      `SELECT author_id FROM authors WHERE author=$1 AND authorUrl=$2;`, // TODONE: Write a SQL query to retrieve the author_id from the authors table for the new article
       [
         req.body.author,
         req.body.authorUrl
@@ -66,7 +66,7 @@ app.post('/articles', function(request, response) {
   function queryThree(author_id) {
     client.query(
       `INSERT INTO articles (article_id, author_id, title, category, "publishedOn", body) VALUES (
-        $1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING RETURNING *;`, // TODO: Write a SQL query to insert the new article using the author_id from our previous query
+        $1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING RETURNING *;`, // TODONE: Write a SQL query to insert the new article using the author_id from our previous query
       [
         request.body.article_id,
         author_id,
@@ -83,21 +83,31 @@ app.post('/articles', function(request, response) {
   }
 });
 
+// data: {
+//   author: this.author,
+//   authorUrl: this.authorUrl,
+//   body: this.body,
+//   category: this.category,
+//   publishedOn: this.publishedOn,
+//   title: this.title,
+//   author_id: this.author_id
+// }
+
 app.put('/articles/:id', function(request, response) {
-  // TODO: Write a SQL query to update an author record. Remember that our articles now have
+  // TODONE: Write a SQL query to update an author record. Remember that our articles now have
   // an author_id property, so we can reference it from the request.body.
-  // TODO: Add the required values from the request as data for the SQL query to interpolate
+  // TODONE: Add the required values from the request as data for the SQL query to interpolate
   client.query(
-    ``,
-    []
+    `UPDATE authors SET author=$1, "authorUrl" = $2 WHERE author_id=$3`,
+    [request.body.author, request.body.authorUrl, request.body.author_id]
   )
   .then(function() {
-    // TODO: Write a SQL query to update an article record. Keep in mind that article records
+    // TODONE: Write a SQL query to update an article record. Keep in mind that article records
     // now have an author_id, in addition to title, category, publishedOn, and body.
-    // TODO: Add the required values from the request as data for the SQL query to interpolate
+    // TODONE: Add the required values from the request as data for the SQL query to interpolate
     client.query(
-      ``,
-      []
+      `UPDATE articles SET body=$1, category=$2, publishedOn=$3, title=$4, author_id=$5 WHERE article_id=$6`,
+      [request.body.body, request.body.category, request.body.publishedOn, request.body.title, request.body.author_id, request.body.article_id]
     )
   })
   .then(function() {
@@ -110,7 +120,7 @@ app.put('/articles/:id', function(request, response) {
 
 app.delete('/articles/:id', function(request, response) {
   client.query(
-    `DELETE FROM articles WHERE article_id=$1;`,
+    `DELETE FROM articles WHERE article_id=;`,
     [request.params.id]
   )
   .then(function() {
