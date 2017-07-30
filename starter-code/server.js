@@ -44,7 +44,7 @@ app.post('/articles', function(request, response) {
       request.body.authorUrl
     ], // TODO: Add the author and "authorUrl" as data for the SQL query
     function(err) {
-      // if (err) console.error(err)
+      if (err) console.error(err)
       queryTwo() // This is our second query, to be executed when this first query is complete.
     }
   )
@@ -72,7 +72,7 @@ app.post('/articles', function(request, response) {
         author_id,
         request.body.title,
         request.body.category,
-        request.body["publishedOn"],
+        request.body['publishedOn'],
         request.body.body
       ], // TODO: Add the data from our new article, including the author_id, as data for the SQL query.
       function(err) {
@@ -112,7 +112,7 @@ app.put('/articles/:id', function(request, response) {
 
 app.delete('/articles/:id', function(request, response) {
   client.query(
-    `DELETE FROM articles WHERE article_id=;`,
+    `DELETE FROM articles WHERE article_id=$1;`,
     [request.params.id]
   )
   .then(function() {
